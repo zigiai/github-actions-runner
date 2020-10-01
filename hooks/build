@@ -1,0 +1,17 @@
+#!/bin/bash
+## https://docs.docker.com/docker-hub/builds/advanced/
+
+## Releases must be of the following pattern v1.17.6 or v1.17.6-r1 only!
+#
+. ./hooks/.helpers
+
+IFS='-' read -r -a parts <<< "$GIT_BRANCH"
+VERSION=${parts[0]}
+RELEASE=${parts[1]}
+
+## Builds multiflavour images
+release_list_from_template Dockerfile.gotmpl | while read line; do
+  read tag flavour dockerfile <<< $(echo $line)
+  docker build \
+    --build-arg RUNNER_VERSION=${VERSION#v} -t $DOCKER_REPO:$tag -f $dockerfile .
+done
