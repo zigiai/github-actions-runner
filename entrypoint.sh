@@ -15,4 +15,6 @@ else
 fi
 
 ./config.sh --unattended --replace --url "${RUNNER_URL}" --token "${RUNNER_TOKEN}"
+
+unset GH_TOKEN
 exec "./run.sh" "${RUNNER_ARGS}"

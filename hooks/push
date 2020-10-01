@@ -1,0 +1,30 @@
+#!/bin/bash
+## https://docs.docker.com/docker-hub/builds/advanced/
+
+. ./hooks/.helpers
+
+IFS='-' read -r -a parts <<< "$GIT_BRANCH"
+VERSION=${parts[0]}
+RELEASE=${parts[1]}
+
+release_list_from_template Dockerfile.gotmpl | while read line; do
+  read tag flavour dockerfile <<< "$line"
+
+  stripped_release="${tag%-r*}"
+  stripped_patch=$(echo $stripped_release | sed -r 's/^(v[0-9]+.[0-9]+).[0-9]+/\1/')
+
+  ## tag latest if set
+  latest=""
+  if [ "$flavour" = "_" ]; then
+    latest="latest"
+  else
+    latest="$flavour"
+  fi
+
+  tag_and_push $tag $stripped_release $stripped_patch $latest
+done
+
+## update microbadger
+if [ -n "$MICROBADGER_TOKEN" ]; then
+  curl -XPOST "https://hooks.microbadger.com/images/${DOCKER_REPO#index.docker.io/}/${MICROBADGER_TOKEN}"
+fi
