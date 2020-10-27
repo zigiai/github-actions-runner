@@ -31,6 +31,11 @@ if [ ! -f /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
     /virtual-environments/images/linux/scripts/base/repos.sh
 fi
 
+if [ ! -f ${INSTALLER_SCRIPT_FOLDER}/toolset.json ]; then
+    cp /virtual-environments/images/linux/toolsets/toolset-"${UBUNTU_VERSION}".json "${INSTALLER_SCRIPT_FOLDER}"/toolset.json
+    cp /virtual-environments/images/linux/toolsets/toolcache-"${UBUNTU_VERSION}".json "${INSTALLER_SCRIPT_FOLDER}"/toolcache.json
+fi
+
 if [ -z "$1" ]; then
     echo "You have the package you want to install."
     exit 1

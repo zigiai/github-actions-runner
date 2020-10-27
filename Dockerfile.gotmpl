@@ -40,12 +40,17 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
 # Copy scripts.
 COPY scripts/install-from-virtual-env /usr/local/bin/install-from-virtual-env
 
+RUN curl https://raw.githubusercontent.com/actions/virtual-environments/${VIRTUAL_ENVIRONMENT_VERSION}/images/linux/ubuntu2004.json  > /toolset.json
+
 # Install base packages from the virtual environment.
 RUN for package in ${VIRTUAL_ENV_INSTALLS}; do \
         install-from-virtual-env $package; \
     done && \
     apt-get -y clean && \
-    rm -rf /virtual-environments /var/cache/apt /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    rm -rf /virtual-environments /var/cache/apt /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    wget https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 -O /usr/bin/yq && \
+    chmod +x /usr/bin/yq
+
 
 # Copy helper scripts
 COPY entrypoint.sh remove_runner.sh /
