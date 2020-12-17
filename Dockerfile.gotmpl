@@ -50,13 +50,12 @@ RUN for package in ${VIRTUAL_ENV_INSTALLS}; do \
 # Copy helper scripts
 COPY entrypoint.sh remove_runner.sh /
 
-# Drop privileges
-RUN useradd -u 1001 -mr -d /home/runner runner
+# Install runner and its dependencies.
+RUN useradd -u 1001 -mr -d /home/runner runner && \
+    curl -sL "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | tar xzvC /home/runner && \
+    /home/runner/bin/installdependencies.sh
+
 WORKDIR /home/runner
 USER runner
-
-# Install runner and its dependencies.
-RUN curl -sL "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | tar xzvC /home/runner && \
-    /home/runner/bin/installdependencies.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
