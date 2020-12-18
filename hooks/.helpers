@@ -39,10 +39,10 @@ release_list_from_template() {
     FLAVOUR="$flavour" $tmpdir/gomplate \
       -d flavours=.flavours.yaml -f $tpl > $rendered
 
-    tag="${version}-${flavour}-${release}"
-    tag=$(echo $tag | sed -e 's/-_-/-/' -e 's/-$//')
+    tag="${VERSION}-${flavour}-${RELEASE}"
+    tag=$(echo $tag | sed -e 's/-_-/-/' -e 's/^-//' -e 's/-$//')
 
-    echo $tag $rendered
+    echo "$tag $flavour $rendered"
   done
 }
 
