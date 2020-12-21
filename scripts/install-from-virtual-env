@@ -42,7 +42,7 @@ if [ -z "$1" ]; then
 fi
 SCRIPT="${1}.sh"
 if [ ! -f "${SCRIPT_PATH}/${SCRIPT}" ]; then
-    echo "Package not available in the virtual environment."
+    echo "Package ${SCRIPT} not available in the virtual environment."
     exit 1
 fi
 
